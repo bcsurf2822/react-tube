@@ -4,6 +4,7 @@ import { SearchBar } from "./components/searchBar";
 
 import axios from "axios";
 import VideoDetail from "./components/videoDetail";
+import { VideoList } from "./components/videoList";
 const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
 
 //.env info Most of the time we have 2 sets of keys - one set for each environment. So one set for "development" (to use to test your app while you're building it) and another for "production" (for you app to use once it's deployed for the world to see).
@@ -11,6 +12,10 @@ const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
 export default function Home() {
   const [videos, setVideos] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
+
+  const onVideoSelect = (selectedVideo) => {
+    setSelectedVideo(selectedVideo)
+  }
 
   const videoSearch = (term) => {
     const url = "https://www.googleapis.com/youtube/v3/search";
@@ -21,7 +26,6 @@ export default function Home() {
       q: term,
       type: "video",
     };
-
     axios
       // .get(url, { params })
       .get('../data.json')
@@ -37,9 +41,10 @@ export default function Home() {
   };
 
   return (
-    <div>
-      <SearchBar onSearchTermChange={videoSearch} />
-      <VideoDetail video={selectedVideo} />
-    </div>
+    <div className='row justify-content-center'>
+		<SearchBar onSearchTermChange={videoSearch} />
+		<VideoDetail video={selectedVideo} />
+		<VideoList onVideoSelect={onVideoSelect} videos={videos} />
+	</div>
   );
 }
